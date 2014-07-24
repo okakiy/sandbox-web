@@ -15,25 +15,17 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import javax.annotation.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
 import javax.inject.Singleton;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+@TransactionTimeout(value = 3600, unit = TimeUnit.SECONDS)
 @ManagedBean
 @Singleton
 @ApplicationScoped
-@TransactionTimeout(value = 3600, unit = TimeUnit.SECONDS)
-
 public class MahoutBean {
-    private Recommender recommender;
-    private FileDataModel dataModel;
-    private UserNeighborhood neighborhood;
-    private UserSimilarity userSimilarity;
-
     public Recommender getRecommender() {
         return recommender;
     }
@@ -49,6 +41,11 @@ public class MahoutBean {
     public UserSimilarity getUserSimilarity() {
         return userSimilarity;
     }
+
+    Recommender recommender;
+    FileDataModel dataModel;
+    UserNeighborhood neighborhood;
+    UserSimilarity userSimilarity;
 
     public static void showEnv () {
         Map<String, String> env = System.getenv();
@@ -75,7 +72,7 @@ public class MahoutBean {
         userSimilarity = new TanimotoCoefficientSimilarity(dataModel);
 
         neighborhood =
-                new NearestNUserNeighborhood( 5, userSimilarity, dataModel);
+                new NearestNUserNeighborhood( 15, userSimilarity, dataModel);
 
         recommender =
                 new GenericUserBasedRecommender(dataModel, neighborhood, userSimilarity);
