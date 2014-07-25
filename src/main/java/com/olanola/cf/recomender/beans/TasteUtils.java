@@ -7,6 +7,7 @@ import org.apache.mahout.cf.taste.model.Preference;
 import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class TasteUtils {
             System.out.println("Doc Id: " + theItem + " Title: " + title + " Score: " + item.getValue());
         }
     }
-    public static String jsonRecs(List<RecommendedItem> recommendations) {
+    public static String jsonRecs(Object recommendations) {
         Gson gson = new Gson();
         return gson.toJson(recommendations);
     }
@@ -49,12 +50,36 @@ public class TasteUtils {
             for (Preference np : neighP) {
                 long uid = up.getItemID();
                 if (uid == np.getItemID()) {
-                    String title = map.get(uid);
+                    String title = map.get(((Long)uid).toString());
                     System.out.println("ID: " + uid + " Title: " + title + " User Val: " + up.getValue() + " Neighbor Val: " + np.getValue());
                 }
             }
         }
     }
+
+    public static Map<String,Object> getCommonalities(DataModel dataModel, long user, long neighbor) throws TasteException {
+        PreferenceArray userP = dataModel.getPreferencesFromUser(user);
+        PreferenceArray neighP = dataModel.getPreferencesFromUser(neighbor);
+
+        Map<String,Object> commsMap = new HashMap<>();
+
+        System.out.println("---------------------------");
+        System.out.println("Commonalities between " + user + " and " + neighbor);
+        for (Preference up : userP) {
+            for (Preference np : neighP) {
+                long uid = up.getItemID();
+                if (uid == np.getItemID()) {
+                    Map<String,String> item = new HashMap<>();
+                    item.put("userId", ((Long)uid).toString() );
+                    item.put("userVal", ((Float)up.getValue()).toString() );
+                    item.put("neighborVal", ((Float)np.getValue()).toString() );
+                    commsMap.put(((Long)uid).toString(),item);
+                }
+            }
+        }
+        return commsMap;
+    }
+
 
     public static void printCommonalitiesItems(DataModel dataModel, long user, long neighbor, Map<String, String> map) throws TasteException {
         PreferenceArray userP = dataModel.getPreferencesFromUser(user);

@@ -22,7 +22,10 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.codehaus.jettison.json.JSONObject;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple CDI service which is able to say hello to someone
@@ -38,9 +41,23 @@ public class RecommendationsService {
         Long userId = Long.parseLong( name );
         List<RecommendedItem> recommendations = mahoutBean.getRecommender().recommend(userId, 5);
         System.out.println("printRecs: " + name);
-        //TasteUtils.printRecs(recommendations,null);
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("recommendations", recommendations);
 
-        return TasteUtils.jsonRecs(recommendations);
+        //printCommonalities
+        long[] users = mahoutBean.getNeighborhood().getUserNeighborhood(userId);
+        Map<String,Object> pairs = new HashMap<>();
+
+        for (Long neighbor : users) {
+            pairs.put(neighbor.toString(), TasteUtils.getCommonalities(mahoutBean.getDataModel(), userId, neighbor));
+        }
+        map.put("pairs", pairs);
+
+
+
+
+
+        return TasteUtils.jsonRecs( map );
     }
 
 }

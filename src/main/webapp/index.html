@@ -36,16 +36,23 @@ $( document ).ready( function() {
         }
         //console.log("clicked: " + name);
         var resultText = "<h2>Recommendation</h2>";
+        var pairText = "<h2>Neighbors</h2>";
         $.ajax( 'hello/json/' + name, {
             dataType:'json',
             data:{},
             type:'POST',
             success:function ( data ) {
                 console.log("success: " + data.recommendations);
-                for	(index = 0; index < data.length; ++index) {
-                    resultText = resultText + "<br><a target=_blank href=http://mirtesen.ru/pad/" + data[index].itemID + ">" + data[index].itemID + "</a>";
+                for	(index = 0; index < data.recommendations.length; ++index) {
+                    resultText = resultText + "<br><a target=_blank href=http://mirtesen.ru/pad/" + data.recommendations[index].itemID + ">" + data.recommendations[index].itemID + "</a>";
                 }
-                $( '#result' ).html( resultText );
+                var hash = data.pairs;
+                for (var k in hash){
+                    pairText = pairText + "<br><a target=_blank href=http://mirtesen.ru/people/" + k + ">" + k + "</a>";
+                //alert(1);
+                }
+
+                $( '#result' ).html( resultText + pairText );
                 $( '#for' ).html( "For: " + name );
             }
         })
