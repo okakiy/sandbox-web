@@ -44,12 +44,11 @@ $( document ).ready( function() {
             success:function ( data ) {
                 console.log("success: " + data.recommendations);
                 for	(index = 0; index < data.recommendations.length; ++index) {
-                    resultText = resultText + "<br><a target=_blank href=http://mirtesen.ru/pad/" + data.recommendations[index].itemID + ">" + data.recommendations[index].itemID + "</a>";
+                    resultText = resultText + "<br>"+index+". <a target=_blank href=http://mirtesen.ru/pad/" + data.recommendations[index].itemID + ">" + data.recommendations[index].itemID + "</a>";
                 }
                 var hash = data.pairs;
                 for (var k in hash){
                     pairText = pairText + "<br><a target=_blank href=http://mirtesen.ru/people/" + k + ">" + k + "</a>";
-                //alert(1);
                 }
 
                 $( '#result' ).html( resultText + pairText );

@@ -19,10 +19,8 @@ package com.olanola.cf.recomender.beans;
 import com.olanola.cf.recomender.cdi.MahoutBean;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
-import org.codehaus.jettison.json.JSONObject;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +37,9 @@ public class RecommendationsService {
 
     String toString(String name) throws TasteException {
         Long userId = Long.parseLong( name );
-        List<RecommendedItem> recommendations = mahoutBean.getRecommender().recommend(userId, 5);
+        List<RecommendedItem> recommendations = mahoutBean.getRecommender().recommend(userId, 55);
         System.out.println("printRecs: " + name);
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("recommendations", recommendations);
 
         //printCommonalities
